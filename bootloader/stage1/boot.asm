@@ -335,8 +335,8 @@ disk_reset:
   popa
   ret
 
-msg_loading:            db 'Loading...', ENDL, 0
-msg_read_failed:        db 'Failed reading from disk', ENDL, 0
+msg_loading:            db 'Loading FishOS...', ENDL, 0
+msg_read_failed:        db 'Failed to read disk', ENDL, 0
 msg_stage2_not_found:   db 'Stage2 not found', ENDL, 0
 file_stage2_bin:        db 'STAGE2  BIN'
 stage2_cluster:         dw 0
