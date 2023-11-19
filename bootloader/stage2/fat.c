@@ -143,7 +143,7 @@ FAT_File far* FAT_OpenEntry(DISK* disk, FAT_DirectoryEntry* entry) {
   fd->Public.Handle = handle;
   fd->Public.IsDirectory = (entry->Attributes & FAT_ATTRIBUTE_DIRECTORY) != 0;
   fd->Public.Position = 0;
-  fd->Public.Size = 0;
+  fd->Public.Size = entry->Size;
   fd->FirstCluster = entry->FirstClusterLow + ((uint32_t)entry->FirstClusterHigh << 16);
   fd->CurrentCluster = fd->FirstCluster;
   fd->CurrentSectorInCluster = 0;
@@ -173,7 +173,9 @@ uint32_t FAT_Read(DISK* disk, FAT_File far* file, uint32_t byteCount, void* data
   uint8_t* u8DataOut = (uint8_t*)dataOut;
 
   // don't read past the end of the file
-  byteCount = min(byteCount, fd->Public.Size - fd->Public.Position);
+  if (!fd->Public.IsDirectory) {
+    byteCount = min(byteCount, fd->Public.Size - fd->Public.Position);
+  }
 
   while (byteCount > 0) {
     uint32_t leftInBuffer = SECTOR_SIZE - (fd->Public.Position % SECTOR_SIZE);
@@ -185,7 +187,7 @@ uint32_t FAT_Read(DISK* disk, FAT_File far* file, uint32_t byteCount, void* data
     byteCount -= take;
 
     // see if we need to read more data
-    if (byteCount > 0) {
+    if (leftInBuffer == take) {
       // special handling for root directory
       if (fd->Public.Handle == ROOT_DIRECTORY_HANDLE) {
         ++fd->CurrentCluster;
@@ -233,21 +235,23 @@ void FAT_Close(FAT_File far* file) {
 }
 
 bool FAT_FindFile(DISK* disk, FAT_File far* file, const char* name, FAT_DirectoryEntry* entryOut) {
-  char fatName[11];
+  char fatName[12];
   FAT_DirectoryEntry entry;
 
   // convert from name to fat name
   memset(fatName, ' ', sizeof(fatName));
+  fatName[11] = '\0';
+
   const char* ext = strchr(name, '.');
   if (ext == NULL) {
     ext = name + 11;
   }
-  for (int i = 0; i < 8 && name + i < ext; i++) {
+  for (int i = 0; i < 8 && name[i] && name + i < ext; i++) {
     fatName[i] = toupper(name[i]);
   }
   if (ext != NULL) {
-    for (int i = 0; i < 3 && ext[i]; i++) {
-      fatName[i + 8] = ext[i];
+    for (int i = 0; i < 3 && ext[i + 1]; i++) {
+      fatName[i + 8] = toupper(ext[i + 1]);
     }
   }
   while (FAT_ReadEntry(disk, file, &entry)) {

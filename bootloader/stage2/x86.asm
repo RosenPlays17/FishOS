@@ -153,16 +153,20 @@ _x86_Disk_Read:
   ; make new call frame
   push bp                           ; save old call frame
   mov bp, sp                        ; initialize new call frame
+
+  ; save modified regs
+  push bx
+  push es
   
   ; setup args
   mov dl, [bp + 4]                  ; dl - drive
   mov ch, [bp + 6]                  ; ch - cylinder (lower 8 bits)
   mov cl, [bp + 7]                  ; cl - cylinder to bits 6-7
   shl cl, 6
-  mov dh, [bp + 10]                  ; dh - head
-  mov al, [bp + 8]                 ; cl - sector to bits 0-5
+  mov al, [bp + 8]                  ; cl - sector to bits 0-5
   and al, 3Fh
   or cl, al
+  mov dh, [bp + 10]                 ; dh - head
   mov al, [bp + 12]                 ; al - count
   mov bx, [bp + 16]                 ; es:bx - far pointer to data out
   mov es, bx

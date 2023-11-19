@@ -4,7 +4,6 @@
 bool DISK_Initialize(DISK* disk, uint8_t driveNumber) {
   uint8_t driveType;
   uint16_t cylinders, sectors, heads;
-  disk->id = driveNumber;
 
   if (!x86_Disk_GetDriveParams(disk->id, &driveType, &cylinders, &sectors, &heads)) {
     return false;
