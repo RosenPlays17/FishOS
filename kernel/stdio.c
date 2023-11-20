@@ -85,12 +85,19 @@ void putc(char c) {
   if (g_ScreenY >= SCREEN_HEIGHT) {
     scrollback(1);
   }
-
   setcursor(g_ScreenX, g_ScreenY);
 }
 
 void puts(const char* str) {
   while (*str) {
+    putc(*str);
+    str++;
+  }
+}
+
+void printc(const char* str, uint8_t color) {
+  while (*str) {
+    putcolor(g_ScreenX, g_ScreenY, color);
     putc(*str);
     str++;
   }

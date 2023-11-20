@@ -10,18 +10,18 @@ void __attribute__((section(".entry"))) start(uint16_t bootDrive) {
   memset(&__bss_start, 0, (&__end) - (&__bss_start));
   HAL_Initialize();
   clrscr();
-  printf("\n _____ _     _      ___  ____     \
+  printc("\n _____ _     _      ___  ____     \
           \n|  ___(_)___| |__  / _ \\/ ___|   \
           \n| |_  | / __| '_ \\| | | \\___ \\ \
           \n|  _| | \\__ \\ | | | |_| |___) | \
-          \n|_|   |_|___/_| |_|\\___/|____/  v0.1\n\n");
+          \n|_|   |_|___/_| |_|\\___/|____/  v0.1\n\n", 0x0B);
 
-  printf("\n   ___   \
+  printc("\n   ___   \
           \n _/   \\ \
           \n/ |  ,--,\
           \n| |  `--'\
           \n\\_|    |\
-          \n  |_||_|");
+          \n  |_||_|", 0x04);
 
 end:
   for(;;);
