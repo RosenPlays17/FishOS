@@ -1,54 +1,54 @@
-#include "headers/stdint.h"
-#include "headers/stdio.h"
+#include <stdint.h>
+#include <stddef.h>
 #include "headers/disk.h"
 #include "headers/fat.h"
+#include "headers/stdio.h"
 
-void far* g_data = (void far*)0x00500200;
+void __attribute__((cdecl)) start(uint16_t bootDrive) {
+  clrscr();
+  printf("\n _____ _     _      ___  ____     \
+          \n|  ___(_)___| |__  / _ \\/ ___|   \
+          \n| |_  | / __| '_ \\| | | \\___ \\ \
+          \n|  _| | \\__ \\ | | | |_| |___) | \
+          \n|_|   |_|___/_| |_|\\___/|____/  v0.1\n\n");
 
-void _cdecl cstart_(uint16_t bootDrive) {
   DISK disk;
   if (!DISK_Initialize(&disk, bootDrive)) {
-    printf("Disk init error\r\n");
+    printf("Disk init error\n");
     goto end;
   }
   if (!FAT_Initialize(&disk)) {
-    printf("FAT init error\r\n");
+    printf("FAT init error\n");
     goto end;
   }
 
-  printf("\r\n _____ _     _      ___  ____     \
-          \r\n|  ___(_)___| |__  / _ \\/ ___|   \
-          \r\n| |_  | / __| '_ \\| | | \\___ \\ \
-          \r\n|  _| | \\__ \\ | | | |_| |___) | \
-          \r\n|_|   |_|___/_| |_|\\___/|____/  v0.1 \r\n\n");
+  FAT_File* fd = FAT_Open(&disk, "/");
+  FAT_DirectoryEntry entry;
 
   // browse files in root
-  printf("\nFiles in root directory:\r\n");
-  FAT_File far* fd = FAT_Open(&disk, "/");
-  FAT_DirectoryEntry entry;
+  printf("\nFiles in root directory:\n");
   while (FAT_ReadEntry(&disk, fd, &entry) && entry.Name[0] != NULL) {
     printf("  ");
     for (int i = 0; i < 11; i++) {
       putc(entry.Name[i]);
     }
-    printf("\r\n");
+    printf("\n");
   }
   FAT_Close(fd);
 
   // browse files in testdir
-  printf("\nFiles in /testdir/:\r\n");
-  FAT_File far* td = FAT_Open(&disk, "/testdir/");
-  FAT_DirectoryEntry tentry;
-  while (FAT_ReadEntry(&disk, td, &tentry) && tentry.Name[0] != NULL) {
+  printf("\nFiles in /testdir/:\n");
+  fd = FAT_Open(&disk, "/testdir/");
+  while (FAT_ReadEntry(&disk, fd, &entry) && entry.Name[0] != NULL) {
     printf("  ");
     for (int i = 0; i < 11; i++) {
-      putc(tentry.Name[i]);
+      putc(entry.Name[i]);
     }
-    printf("\r\n");
+    printf("\n");
   }
-  FAT_Close(td);
+  FAT_Close(fd);
 
-  printf("\nContents of /testdir/test.txt:\r\n");
+  printf("\nContents of /testdir/test.txt:\n");
   char buffer[100];
   uint32_t read;
   fd = FAT_Open(&disk, "/testdir/test.txt");
