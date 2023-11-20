@@ -1,4 +1,4 @@
-#include "headers/ctype.h"
+#include <h/ctype.h>
 
 bool islower(char chr) {
   return chr >= 'a' && chr <= 'z';

@@ -1,7 +1,7 @@
 #pragma once
 #include <stdbool.h>
 #include <stdint.h>
-#include "disk.h"
+#include <h/disk.h>
 
 typedef struct {
   uint8_t Name[11];

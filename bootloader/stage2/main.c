@@ -1,10 +1,10 @@
-#include <stdint.h>
+#include <h/disk.h>
+#include <h/fat.h>
+#include <h/stdio.h>
+#include <h/memdefs.h>
+#include <h/memory.h>
 #include <stddef.h>
-#include "headers/disk.h"
-#include "headers/fat.h"
-#include "headers/stdio.h"
-#include "headers/memdefs.h"
-#include "headers/memory.h"
+#include <stdint.h>
 
 uint8_t* KernelLoadBuffer = (uint8_t*)MEMORY_LOAD_KERNEL;
 uint8_t* Kernel = (uint8_t*)MEMORY_KERNEL_ADDR;

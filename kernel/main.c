@@ -1,12 +1,14 @@
+#include <h/hal/hal.h>
+#include <h/memory.h>
+#include <h/stdio.h>
 #include <stdint.h>
-#include "headers/stdio.h"
-#include "headers/memory.h"
 
 extern uint8_t __bss_start;
 extern uint8_t __end;
 
 void __attribute__((section(".entry"))) start(uint16_t bootDrive) {
   memset(&__bss_start, 0, (&__end) - (&__bss_start));
+  HAL_Initialize();
   clrscr();
   printf("\n _____ _     _      ___  ____     \
           \n|  ___(_)___| |__  / _ \\/ ___|   \

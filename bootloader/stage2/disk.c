@@ -1,6 +1,6 @@
+#include <h/disk.h>
+#include <h/x86.h>
 #include <stdbool.h>
-#include "headers/disk.h"
-#include "headers/x86.h"
 
 bool DISK_Initialize(DISK* disk, uint8_t driveNumber) {
   uint8_t driveType;

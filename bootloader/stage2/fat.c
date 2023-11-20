@@ -1,12 +1,12 @@
+#include <h/ctype.h>
+#include <h/fat.h>
+#include <h/memdefs.h>
+#include <h/memory.h>
+#include <h/minmax.h>
+#include <h/stdio.h>
+#include <h/string.h>
 #include <stdbool.h>
 #include <stddef.h>
-#include "headers/ctype.h"
-#include "headers/fat.h"
-#include "headers/memdefs.h"
-#include "headers/memory.h"
-#include "headers/minmax.h"
-#include "headers/stdio.h"
-#include "headers/string.h"
 
 #define SECTOR_SIZE           512
 #define MAX_PATH_SIZE         256
