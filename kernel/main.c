@@ -21,8 +21,7 @@ void __attribute__((section(".entry"))) start(uint16_t bootDrive) {
           \n/ |  ,--,\
           \n| |  `--'\
           \n\\_|    |\
-          \n  |_||_|", 0x04);
-
+          \n  |_||_|\n", 0x04);
 end:
   for(;;);
 }
