@@ -1,10 +1,15 @@
 #include <h/hal/hal.h>
+#include <h/i686/irq.h>
 #include <h/memory.h>
 #include <h/stdio.h>
 #include <stdint.h>
 
 extern uint8_t __bss_start;
 extern uint8_t __end;
+
+void timer(Registers* regs) {
+  printf(".");
+}
 
 void __attribute__((section(".entry"))) start(uint16_t bootDrive) {
   memset(&__bss_start, 0, (&__end) - (&__bss_start));
@@ -22,6 +27,9 @@ void __attribute__((section(".entry"))) start(uint16_t bootDrive) {
           \n| |  `--'\
           \n\\_|    |\
           \n  |_||_|\n", 0x04);
+
+  i686_IRQ_RegisterHandler(0, timer);
+
 end:
   for(;;);
 }
