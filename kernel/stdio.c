@@ -258,3 +258,11 @@ void printf(const char* fmt, ...) {
   }
   va_end(args);
 }
+
+void amogus(uint8_t color) {
+  printc("\n   /~~\\ \
+          \n/~|  ,--,\
+          \n| |  `--'\
+          \n\\_|    |\
+          \n  |_||_|\n", color);
+}
