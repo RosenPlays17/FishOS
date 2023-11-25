@@ -86,7 +86,7 @@ x86_Disk_GetDriveParams:
   ; save regs
   push es
   push bx
-  push si
+  push esi
   push di
 
   ; call interrupt
@@ -103,7 +103,7 @@ x86_Disk_GetDriveParams:
 
   ; drive type from bl
   LinearToSegOffset [bp + 12], es, esi, si
-  mov es:[si], bl
+  mov [es:si], bl
 
   ; cylinders
   mov bl, ch                        ; cylinders - lower bits in ch
@@ -127,7 +127,7 @@ x86_Disk_GetDriveParams:
 
   ; restore regs
   pop di
-  pop si
+  pop esi
   pop bx
   pop es
 
@@ -175,7 +175,6 @@ x86_Disk_Reset:
 
 global x86_Disk_Read
 x86_Disk_Read:
-  [bits 32]
 
   ; make new call frame
   push ebp                           ; save old call frame

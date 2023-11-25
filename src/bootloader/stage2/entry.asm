@@ -4,6 +4,7 @@ section .entry
 
 extern __bss_start
 extern __end
+extern _init
 
 extern start
 global entry
@@ -49,10 +50,13 @@ entry:
   cld
   rep stosb
 
+  ; call global constructors
+  call _init
+
   ; expect boot drive in dl, send it as argument to cstart function
   xor edx, edx
   mov dl, [g_BootDrive]
-  push dx
+  push edx
   call start
 
   cli
