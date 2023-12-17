@@ -110,7 +110,7 @@ def create_partition_table(target: str, align_start: int):
     disk.commit()
 
 def mount_fs(image: str, mount_dir: str):
-    sh.guestmount(mount_dir, add=image, mount='/dev/sde1')
+    sh.guestmount(mount_dir, add=image, mount='/dev/sda1')
 
 def unmount_fs(mount_dir: str):
     time.sleep(3)

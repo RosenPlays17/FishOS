@@ -1,4 +1,5 @@
-#include <h/memory.h>
+#include "h/memory.h"
+#include <stdint.h>
 
 void* memcpy(void* dst, const void* src, uint16_t num) {
   uint8_t* u8Dst = (uint8_t*)dst;
@@ -29,4 +30,10 @@ int memcmp(const void* ptr1, const void* ptr2, uint16_t num) {
     }
   }
   return 0;
+}
+
+void* segoffset_to_linear(void* addr) {
+  uint32_t offset = (uint32_t)(addr) & 0xFFFF;
+  uint32_t segment = (uint32_t)(addr) >> 16;
+  return (void*)(segment * 16 + offset);
 }

@@ -1,8 +1,7 @@
-#include <h/i686/gdt.h>
-#include <h/i686/idt.h>
-#include <h/i686/isr.h>
-#include <h/i686/io.h>
-#include <h/stdio.h>
+#include "h/idt.h"
+#include "h/isr.h"
+#include "h/io.h"
+#include "../../h/stdio.h"
 #include <stddef.h>
 
 ISRHandler g_ISRHandlers[256];

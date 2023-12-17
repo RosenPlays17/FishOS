@@ -1,6 +1,6 @@
-#include <h/i686/io.h>
-#include <h/i686/i8259.h>
-#include <h/i686/pic.h>
+#include "h/io.h"
+#include "h/i8259.h"
+#include "h/pic.h"
 #include <stdbool.h>
 #include <stdint.h>
 

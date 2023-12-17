@@ -1,9 +1,9 @@
-#include <h/i686/io.h>
-#include <h/i686/irq.h>
-#include <h/i686/i8259.h>
-#include <h/i686/pic.h>
-#include <h/stdio.h>
-#include <h/util/arrays.h>
+#include "h/io.h"
+#include "h/irq.h"
+#include "h/i8259.h"
+#include "h/pic.h"
+#include "../../h/stdio.h"
+#include "../../h/arrays.h"
 #include <stddef.h>
 
 #define PIC_REMAP_OFFSET 0x20

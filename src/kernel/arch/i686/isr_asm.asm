@@ -22,7 +22,7 @@ i686_ISR%1:
 
 %endmacro
 
-%include "h/i686/isrs_gen.inc"
+%include "arch/i686/h/isrs_gen.inc"
 
 isr_common:
   pusha                    ; pushes edi, esi, ebp, esp, ebx, ecx, eax

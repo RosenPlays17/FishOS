@@ -1,9 +1,8 @@
 from SCons.Environment import Environment
-
 from build_scripts.utility import GlobRecursive
 
 Import('TARGET_ENVIRONMENT')
-TARGET_ENVIRONMENT: Environment
+#TARGET_ENVIRONMENT: Environment
 
 env = TARGET_ENVIRONMENT.Clone()
 env.Append(

@@ -1,7 +1,7 @@
-#include <h/hal/hal.h>
-#include <h/i686/irq.h>
-#include <h/memory.h>
-#include <h/stdio.h>
+#include "hal/h/hal.h"
+#include "h/memory.h"
+#include "h/stdio.h"
+#include "arch/i686/h/irq.h"
 #include <stdint.h>
 
 extern uint8_t __bss_start;

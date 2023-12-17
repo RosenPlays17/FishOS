@@ -2,6 +2,11 @@ bits 16
 
 %define ENDL 0x0D, 0x0A
 
+%define fat12 1
+%define fat16 2
+%define fat32 3
+%define ext2  4
+
 ;
 ; FAT12 header
 ;
@@ -11,31 +16,51 @@ section .fsjump
   nop
 
 section .fsheaders
-  bdb_oem:                   db 'MSWIN4.1'
-  bdb_bytes_per_sector:      dw 512
-  bdb_sectors_per_cluster:   db 1
-  bdb_reserved_sectors:      dw 1
-  bdb_fat_count:             db 2
-  bdb_dir_entries_count:     dw 0E0h
-  bdb_total_sectors:         dw 2880
-  bdb_media_descriptor_type: db 0F0h
-  bdb_sectors_per_fat:       dw 9
-  bdb_sectors_per_track:     dw 18
-  bdb_heads:                 dw 2
-  bdb_hidden_sectors:        dd 0
-  bdb_large_sector_count:    dd 0
+%if (FILESYSTEM == fat12) || (FILESYSTEM == fat16) || (FILESYSTEM == fat32)
+  bdb_oem:                    db 'MSWIN4.1'
+  bdb_bytes_per_sector:       dw 512
+  bdb_sectors_per_cluster:    db 1
+  bdb_reserved_sectors:       dw 1
+  bdb_fat_count:              db 2
+  bdb_dir_entries_count:      dw 0E0h
+  bdb_total_sectors:          dw 2880
+  bdb_media_descriptor_type:  db 0F0h
+  bdb_sectors_per_fat:        dw 9
+  bdb_sectors_per_track:      dw 18
+  bdb_heads:                  dw 2
+  bdb_hidden_sectors:         dd 0
+  bdb_large_sector_count:     dd 0
+  
+  %if (FILESYSTEM == fat32)
+  fat32_sectors_per_fat:      dd 0
+  fat32_flags:                dw 0
+  fat32_fat_version_number:   dw 0
+  fat32_rootdir_cluster:      dd 0
+  fat32_fsinfo_sector:        dw 0
+  fat32_backup_bootsector:    dw 0
+  fat32_reserved:             times 12 db 0
+  %endif
   
   ; extended boot record
-  ebr_drive_number:          db 0
-                             db 0
-  ebr_signature:             db 29h
-  ebr_volume_id:             db 12h, 34h, 56h, 78h
-  ebr_volume_label:          db 'FISH OS    '
-  ebr_system_id:             db 'FAT12   '
+  ebr_drive_number:           db 0
+                              db 0
+  ebr_signature:              db 29h
+  ebr_volume_id:              db 12h, 34h, 56h, 78h
+  ebr_volume_label:           db 'FISH OS    '
+  ebr_system_id:              db 'FAT12   '
+%endif
 
 section .entry
   global start
   start:
+    ; move partition entry from MBR to a different location
+    ; so we don't overwrite it (which is passed through DS:SI)
+    mov ax, PARTITION_ENTRY_SEGMENT
+    mov es, ax
+    mov di, PARTITION_ENTRY_OFFSET
+    mov cx, 16
+    rep movsb
+
     ; setup data segments
     mov ax, 0
     mov ds, ax
@@ -53,10 +78,6 @@ section .entry
     ; read something from hard disk
     ; BIOS should set DL to drive number
     mov [ebr_drive_number], dl
-  
-    ; print loading message
-    mov si, msg_loading
-    call puts
   
     ; check extensions present
     mov ah, 0x41
@@ -105,6 +126,8 @@ section .entry
   .read_finish:
     ; jump to our stage2
     mov dl, [ebr_drive_number]        ; boot device in dl
+    mov si, PARTITION_ENTRY_OFFSET
+    mov di, PARTITION_ENTRY_SEGMENT
     mov ax, STAGE2_LOAD_SEGMENT       ; set segment registers
     mov ds, ax
     mov es, ax
@@ -282,8 +305,7 @@ section .text
     ret
 
 section .rotata
-  msg_loading:            db 'Loading FishOS...', ENDL, 0
-  msg_read_failed:        db 'Failed to read disk', ENDL, 0
+  msg_read_failed:        db 'read failed', ENDL, 0
   msg_stage2_not_found:   db 'Stage2 not found', ENDL, 0
   file_stage2_bin:        db 'STAGE2  BIN'
 
@@ -299,6 +321,9 @@ section .data
 
   STAGE2_LOAD_SEGMENT     equ 0x0
   STAGE2_LOAD_OFFSET      equ 0x500
+
+  PARTITION_ENTRY_SEGMENT equ 0x2000
+  PARTITION_ENTRY_OFFSET  equ 0x0
 
 section .data
   global stage2_location

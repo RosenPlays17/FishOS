@@ -1,5 +1,5 @@
-#include <h/i686/idt.h>
-#include <h/util/binary.h>
+#include "h/idt.h"
+#include "../../h/binary.h"
 #include <stdint.h>
 
 typedef struct {
